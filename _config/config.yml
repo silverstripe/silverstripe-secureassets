@@ -1,0 +1,10 @@
+---
+Name: secureassetsroutes
+After: '#rootroutes'
+---
+File:
+  extensions:
+   - SecureFileExtension
+Director:
+  rules:
+    'assets': 'SecureFileController'

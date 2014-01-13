@@ -1,0 +1,25 @@
+Group:
+  test-group:
+    Title: Test group 
+Member:
+  member-1:
+    FirstName: Joe
+    Email: joe@test.com
+    Groups: =>Group.test-group
+  member-2:
+    FirstName: Steve
+    Email: steve@test.com
+Folder:
+  anyone:
+    CanViewType: Anyone
+  loggedin:
+    CanViewType: LoggedInUsers
+  viewergroups:
+    CanViewType: OnlyTheseUsers
+    ViewerGroups: =>Group.test-group
+  child-viewergroups-restricted:
+    CanViewType: Inherit
+    Parent: =>Folder.viewergroups
+  child-viewergroups-open:
+    CanViewType: Anyone
+    Parent: =>Folder.viewergroups
