@@ -1,55 +1,40 @@
 <?php
+/**
+ * Handles requests to a file path, checking if the file can be viewed given
+ * it's access settings.
+ *
+ * {@link SecureFileController::handleRequest()} will determine whether the file
+ * can be served, by checking the file path against the currently logged in {@link Member}
+ *
+ * See {@link SecureFileExtension} for how the access file is setup in a secured directory.
+ */
 class SecureFileController extends Controller {
 
 	/**
-	 * The htaccess file name.
-	 * Abstracted to allow configuration when
-	 * this is overridden by apache config
-	 */
-	private static $htaccess_file = '.htaccess';
-
-	/**
-	 * Secure files htaccess rules
-	 */
-	public static function htaccess_rules() {
-		$rewrite = array();
-		$rewrite[] = 'RewriteEngine On';
-		$rewrite[] = 'RewriteBase ' . (BASE_URL ? BASE_URL : '/');
-		$rewrite[] = 'RewriteCond %{REQUEST_URI} ^(.*)$';
-		$rewrite[] = 'RewriteRule .* ' . FRAMEWORK_DIR . '/main.php?url=%1 [QSA]';
-		return implode("\n", $rewrite);
-	}
-
-	public function hasAction($action) {
-		return true;
-	}
-
-	public function checkAccessAction($action) {
-		return true;
-	}
-
-	/**
 	 * Process all incoming requests passed to this controller, checking
-	 * that the file exists and passing the file data with MIME type if possible.
+	 * that the file exists and passing the file through if possible.
 	 */
-	protected function handleAction($request, $action) {
+	public function handleRequest(SS_HTTPRequest $request, DataModel $model) {
 		$url = array_key_exists('url', $_GET) ? $_GET['url'] : $_SERVER['REQUEST_URI'];
 		$file = File::find(Director::makeRelative($url));
 
 		if($file instanceof File) {
-			return $file->canView()
-				? $this->sendFile($file)
-				: Security::permissionFailure($this, 'You are not authorised to access this resource. Please log in.');
+			if($file->canView()) {
+				return $this->sendFile($file);
+			}
+			Security::permissionFailure($this, 'You are not authorised to access this resource. Please log in.');
 		} else {
-			return new SS_HTTPResponse('Not Found', 404);
+			$this->response = new SS_HTTPResponse('Not Found', 404);
 		}
+
+		return $this->response;
 	}
 
 	/**
 	 * Output file to the browser.
-	 * We avoid SilverStripe's SS_HTTPResponse stuff here, to try and get this out as fast as possible
+	 * For performance reasons, we avoid SS_HTTPResponse and just output the contents instead.
 	 */
-	function sendFile($file) {
+	public function sendFile($file) {
 		$path = $file->getFullPath();
 
 		if(SapphireTest::is_running_test()) {

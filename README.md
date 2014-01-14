@@ -8,7 +8,7 @@ that mirrors the access restrictions of sitetree pages
 This is a fork of the community module (Also called Secure Files)
 located at https://github.com/hamishcampbell/silverstripe-securefiles.
 
-This module will ONLY work on Apache webservers.
+This should work with IIS 7+, but it has not been extensively tested.
 
 ## Maintainer Contact
 

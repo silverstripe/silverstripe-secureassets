@@ -1,4 +1,18 @@
 <?php
+/**
+ * Extension that allows a CMS user to define view
+ * access to a particular {@link Folder} and the {@link File}s within.
+ *
+ * An access file with rewrite rules is written into the {@link Folder}
+ * once it saved in the CMS (see {@link SecureFileExtension::onAfterWrite()}),
+ * so that the webserver will force a rewrite on the requested assets file path,
+ * turning it into a SilverStripe request so the file can be checked against
+ * currently set access settings.
+ *
+ * Beware that this will have a performance impact on file requests for {@link Folder}
+ * that have been secured, as the file request will no longer be passed through directly
+ * by the webserver.
+ */
 class SecureFileExtension extends DataExtension {
 
 	private static $db = array(
@@ -8,6 +22,37 @@ class SecureFileExtension extends DataExtension {
 	private static $many_many = array(
 		'ViewerGroups' => 'Group',
 	);
+
+	private static $current_access_config = null;
+
+	private static $access_config = array();
+
+	/**
+	 * Tries to autodetect the current webserver and match it against a registered
+	 * webserver configuration through access_config. Check _config.php
+	 * in this module for an example of how those access files are registered through the
+	 * Config system.
+	 *
+	 * You can manually set the config by setting current_access_config yourself.
+	 *
+	 * @return array
+	 */
+	public function getAccessConfig() {
+		$currentConfig = Config::inst()->get('SecureFileExtension', 'current_access_config');
+		if($currentConfig) return $currentConfig;
+
+		$registeredConfigs = Config::inst()->get('SecureFileExtension', 'access_config');
+		if(!empty($_SERVER['SERVER_SOFTWARE'])) {
+			if(strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
+				return $registeredConfigs['Apache'];
+			} elseif(strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false) {
+				return $registeredConfigs['IIS'];
+			}
+		}
+
+		// fallback to Apache
+		return $registeredConfigs['Apache'];
+	}
 
 	function canView($member = null) {
 		if(!$member || !(is_a($member, 'Member')) || is_numeric($member)) $member = Member::currentUser();
@@ -40,7 +85,7 @@ class SecureFileExtension extends DataExtension {
 		return $file->ParentID ? $file->Parent()->canView($member) : false;
 	}
 
-	function needsHTAccess() {
+	function needsAccessFile() {
 		if(SapphireTest::is_running_test()) {
 			return false;
 		}
@@ -50,7 +95,7 @@ class SecureFileExtension extends DataExtension {
 			case 'OnlyTheseUsers':
 				return true;
 			case 'Inherit':
-				// We don't need .htaccess if access is 'inherit', because apache also uses parent directories .htaccess files, all the way up 
+				// We don't need an access file if access is set to 'inherit', because Apache also uses parent directories .htaccess files
 			case 'Anyone':
 			default:
 				return false;
@@ -94,19 +139,20 @@ class SecureFileExtension extends DataExtension {
 	}
 
 	/**
-	 * For folders, will need to add or remove the htaccess rules
+	 * Add or remove access rules to the filesystem path.
 	 * CAUTION: This will not work properly in the presence of third-party .htaccess file
 	 */
 	function onAfterWrite() {
 		parent::onAfterWrite();
 
 		if($this->owner instanceof Folder) {
-			$htaccessFile = Config::inst()->get('SecureFileController', 'htaccess_file');
-			$htaccess = $this->owner->getFullPath() . $htaccessFile;
-			if($this->owner->needsHTAccess()) {
-				if(!file_exists($htaccess)) file_put_contents($htaccess, SecureFileController::htaccess_rules());
+			$config = $this->getAccessConfig();
+			$accessFilePath = $this->owner->getFullPath() . $config['file'];
+
+			if($this->needsAccessFile()) {
+				if(!file_exists($accessFilePath)) file_put_contents($accessFilePath, $config['content']);
 			} else {
-				if(file_exists($htaccess)) unlink($htaccess);				
+				if(file_exists($accessFilePath)) unlink($accessFilePath);
 			}
 		}
 	}
