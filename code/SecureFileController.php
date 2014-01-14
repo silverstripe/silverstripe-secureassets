@@ -4,7 +4,7 @@
  * it's access settings.
  *
  * {@link SecureFileController::handleRequest()} will determine whether the file
- * can be served, by checking the file path against the currently logged in {@link Member}
+ * can be served, by checking {@link SecureFileExtension::canView()}
  *
  * See {@link SecureFileExtension} for how the access file is setup in a secured directory.
  */

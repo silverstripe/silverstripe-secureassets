@@ -3,15 +3,15 @@
  * Extension that allows a CMS user to define view
  * access to a particular {@link Folder} and the {@link File}s within.
  *
- * An access file with rewrite rules is written into the {@link Folder}
- * once it saved in the CMS (see {@link SecureFileExtension::onAfterWrite()}),
+ * An access file with rewrite rules is written into the {@link Folder} directory
+ * once it's saved in the CMS (see {@link SecureFileExtension::onAfterWrite()}),
  * so that the webserver will force a rewrite on the requested assets file path,
  * turning it into a SilverStripe request so the file can be checked against
- * currently set access settings.
+ * access settings.
  *
- * Beware that this will have a performance impact on file requests for {@link Folder}
- * that have been secured, as the file request will no longer be passed through directly
- * by the webserver.
+ * Beware that this will have a performance impact on file requests that exist in
+ * a {@link Folder} that have been secured, as the file request will be treated
+ * as a dynamic request instead of sent directly by the webserver as a static file.
  */
 class SecureFileExtension extends DataExtension {
 
