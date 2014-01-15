@@ -145,6 +145,13 @@ class SecureFileExtension extends DataExtension {
 	function onAfterWrite() {
 		parent::onAfterWrite();
 
+		// this will mess with tests like FolderTest, it'll expect an .htaccess to be there,
+		// but onAfterWrite here will unintentionally remove it. We can workaround that by
+		// skipping the access file writing if a unit test is currently running.
+		if(SapphireTest::is_running_test()) {
+			return false;
+		}
+
 		if($this->owner instanceof Folder) {
 			$config = $this->getAccessConfig();
 			$accessFilePath = $this->owner->getFullPath() . $config['file'];
