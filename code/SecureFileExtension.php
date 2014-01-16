@@ -81,8 +81,9 @@ class SecureFileExtension extends DataExtension {
 		$file = $this->owner;
 		if (!$file->ParentID) $file = DataObject::get_by_id('File', $file->ID);
 
-		// If we still don't have a ParentID, give up and assume no access. Otherwise inherit permissions from the parent
-		return $file->ParentID ? $file->Parent()->canView($member) : false;
+		// we assume if a file doesn't have a parent, it's in the root of assets, and therefore not secured
+		// because there's currently no way to secure the "root" assets folder
+		return $file->ParentID ? $file->Parent()->canView($member) : true;
 	}
 
 	function needsAccessFile() {
