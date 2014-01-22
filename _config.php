@@ -1,6 +1,5 @@
 <?php
-
-$base = BASE_PATH ? BASE_PATH : '/';
+$base = BASE_URL ? BASE_URL : '/';
 $frameworkDir = FRAMEWORK_DIR;
 
 Config::inst()->update('SecureFileExtension', 'access_config', array(
@@ -8,7 +7,7 @@ Config::inst()->update('SecureFileExtension', 'access_config', array(
 		'file' => '.htaccess',
 		'content' => <<<EOF
 RewriteEngine On
-RewriteBase $base;
+RewriteBase $base
 RewriteCond %{REQUEST_URI} ^(.*)$
 RewriteRule .* $frameworkDir/main.php?url=%1 [QSA]
 EOF
