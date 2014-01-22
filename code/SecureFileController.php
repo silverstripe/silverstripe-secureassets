@@ -15,6 +15,7 @@ class SecureFileController extends Controller {
 	 * that the file exists and passing the file through if possible.
 	 */
 	public function handleRequest(SS_HTTPRequest $request, DataModel $model) {
+		Controller::pushCurrent();
 		$url = array_key_exists('url', $_GET) ? $_GET['url'] : $_SERVER['REQUEST_URI'];
 		$file = File::find(Director::makeRelative($url));
 
@@ -22,6 +23,7 @@ class SecureFileController extends Controller {
 			if($file->canView()) {
 				return $this->sendFile($file);
 			}
+			$this->response = new SS_HTTPResponse();
 			Security::permissionFailure($this, 'You are not authorised to access this resource. Please log in.');
 		} else {
 			$this->response = new SS_HTTPResponse('Not Found', 404);
