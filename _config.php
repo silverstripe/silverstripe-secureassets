@@ -8,7 +8,7 @@ Config::inst()->update('SecureFileExtension', 'access_config', array(
 		'file' => '.htaccess',
 		'content' => <<<EOF
 RewriteEngine On
-RewriteBase $base;
+RewriteBase $base
 RewriteCond %{REQUEST_URI} ^(.*)$
 RewriteRule .* $frameworkDir/main.php?url=%1 [QSA]
 EOF
