@@ -23,3 +23,7 @@ Folder:
   child-viewergroups-open:
     CanViewType: Anyone
     Parent: =>Folder.viewergroups
+File:
+  test:
+    Name: test-file
+    Filename: assets/FileTest.txt

@@ -15,18 +15,27 @@ class SecureFileController extends Controller {
 	 * that the file exists and passing the file through if possible.
 	 */
 	public function handleRequest(SS_HTTPRequest $request, DataModel $model) {
-		Controller::pushCurrent();
+		// Copied from Controller::handleRequest()
+		$this->pushCurrent();
+		$this->urlParams = $request->allParams();
+		$this->request = $request;
+		$this->response = new SS_HTTPResponse();
+		$this->setDataModel($model);
+
 		$url = array_key_exists('url', $_GET) ? $_GET['url'] : $_SERVER['REQUEST_URI'];
+		$url = ltrim($url, '/'); // Remove the leading / if any (/assets/blah.txt becomes assets/blah.txt)
 		$file = File::find(Director::makeRelative($url));
 
-		if($file instanceof File) {
-			if($file->canView()) {
-				return $this->sendFile($file);
-			}
-			$this->response = new SS_HTTPResponse();
-			Security::permissionFailure($this, 'You are not authorised to access this resource. Please log in.');
+		if($this->canDownloadFile($file)) {
+			return $this->sendFile($file);
 		} else {
-			$this->response = new SS_HTTPResponse('Not Found', 404);
+			if($file instanceof File) {
+				// Permission failure
+				Security::permissionFailure($this, 'You are not authorised to access this resource. Please log in.');
+			} else {
+				// File doesn't exist
+				$this->response = new SS_HTTPResponse('File Not Found', 404);
+			}
 		}
 
 		return $this->response;
@@ -52,6 +61,26 @@ class SecureFileController extends Controller {
 
 		readfile($path);
 		die();
+	}
+
+	public function canDownloadFile(File $file = null) {
+		if($file instanceof File) {
+			// Implement a FileExtension with canDownload(), and we'll test that first
+			$results = $file->extend('canDownload');
+			if($results && is_array($results)) {
+				if(!min($results)) return false;
+				else return true;
+			}
+
+			// If an extension with canDownload() can't be found, fallback to using canView
+			if($file->canView()) {
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 
 }
