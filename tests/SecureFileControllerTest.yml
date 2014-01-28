@@ -1,0 +1,22 @@
+Group:
+  test-group:
+    Name: Test Group
+Member:
+  member-1:
+    FirstName: Joe
+    Email: joe@test.com
+    Groups: =>Group.test-group
+  member-2:
+    FirstName: Steve
+    Email: steve@test.com
+File:
+  permissive:
+    Name: test-file
+    Filename: assets/FileTest.txt
+    CanViewType: LoggedInUsers
+    # CanViewType: OnlyTheseUsers
+    # ViewerGroups: =>Group.test-group
+  restrictive:
+    Name: test-file2
+    Filename: assets/FileTest2.txt
+    CanViewType: anyone
