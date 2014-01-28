@@ -23,7 +23,10 @@ class SecureFileController extends Controller {
 		$this->setDataModel($model);
 
 		$url = array_key_exists('url', $_GET) ? $_GET['url'] : $_SERVER['REQUEST_URI'];
-		$url = ltrim($url, '/'); // Remove the leading / if any (/assets/blah.txt becomes assets/blah.txt)
+
+		// remove any relative base URL and prefixed slash that get appended to the file path
+		// e.g. /mysite/assets/test.txt should become assets/test.txt to match the Filename field on File record
+		$url = ltrim(str_replace(BASE_URL, '', $url), '/');
 		$file = File::find(Director::makeRelative($url));
 
 		if($this->canDownloadFile($file)) {
