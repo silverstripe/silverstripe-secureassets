@@ -56,12 +56,15 @@ class SecureFileController extends Controller {
 		}
 
 		header('Content-Description: File Transfer');
-		header('Content-Disposition: inline; filename=' . basename($path));
+		header('Content-Disposition: inline; filename="' . basename($path) . '"'); // Fixes "Filenames with spaces are truncated upon download" - Problem (http://kb.mozillazine.org/Filenames_with_spaces_are_truncated_upon_download)
 		header('Content-Length: ' . $file->getAbsoluteSize());
 		header('Content-Type: ' . HTTP::get_mime_type($file->getRelativePath()));
 		header('Content-Transfer-Encoding: binary');
 		header('Pragma: '); // Fixes IE6,7,8 file downloads over HTTPS bug (http://support.microsoft.com/kb/812935)
 
+		set_time_limit(0);
+		ob_end_flush();
+		session_write_close();
 		readfile($path);
 		die();
 	}
