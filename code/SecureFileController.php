@@ -62,7 +62,16 @@ class SecureFileController extends Controller {
 		header('Content-Transfer-Encoding: binary');
 		header('Pragma: '); // Fixes IE6,7,8 file downloads over HTTPS bug (http://support.microsoft.com/kb/812935)
 
-		readfile($path);
+		// Allow the download to last long enough to allow full download with 100kB/s connection.
+		// Equates to 174 minutes per 1GB.
+		increase_time_limit_to(filesize($path)/(100*1024));
+
+		// Do not use readfile, it will try to post entire file in one go if output_buffering is enabled in php.ini.
+		$f = fopen($path, 'r');
+		while(!feof($f)){
+			print fgets($f, 4096);
+		}
+		fclose($f);
 		die();
 	}
 
