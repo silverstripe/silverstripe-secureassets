@@ -61,7 +61,8 @@ class SecureFileController extends Controller {
 		}
 
 		header('Content-Description: File Transfer');
-		header('Content-Disposition: inline; filename=' . basename($path));
+		// Quotes needed to retain spaces (http://kb.mozillazine.org/Filenames_with_spaces_are_truncated_upon_download)
+		header('Content-Disposition: inline; filename="' . basename($path) . '"');
 		header('Content-Length: ' . $file->getAbsoluteSize());
 		header('Content-Type: ' . HTTP::get_mime_type($file->getRelativePath()));
 		header('Content-Transfer-Encoding: binary');
