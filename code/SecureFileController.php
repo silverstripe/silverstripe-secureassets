@@ -10,6 +10,11 @@
  */
 class SecureFileController extends Controller {
 
+	// We calculate the timelimit based on the filesize. Set to 0 to give unlimited timelimit.
+	// The calculation is: give enough time for the user with x kB/s connection to donwload the entire file.
+	// E.g. The default 50kB/s equates to 348 minutes per 1GB file.
+	private static $min_download_bandwidth = 50; // [in kilobytes per second]
+
 	/**
 	 * Process all incoming requests passed to this controller, checking
 	 * that the file exists and passing the file through if possible.
@@ -56,22 +61,29 @@ class SecureFileController extends Controller {
 		}
 
 		header('Content-Description: File Transfer');
-		header('Content-Disposition: inline; filename=' . basename($path));
+		// Quotes needed to retain spaces (http://kb.mozillazine.org/Filenames_with_spaces_are_truncated_upon_download)
+		header('Content-Disposition: inline; filename="' . basename($path) . '"');
 		header('Content-Length: ' . $file->getAbsoluteSize());
 		header('Content-Type: ' . HTTP::get_mime_type($file->getRelativePath()));
 		header('Content-Transfer-Encoding: binary');
-		header('Pragma: '); // Fixes IE6,7,8 file downloads over HTTPS bug (http://support.microsoft.com/kb/812935)
+		// Fixes IE6,7,8 file downloads over HTTPS bug (http://support.microsoft.com/kb/812935)
+		header('Pragma: ');
 
-		// Allow the download to last long enough to allow full download with 100kB/s connection.
-		// Equates to 174 minutes per 1GB.
-		increase_time_limit_to(filesize($path)/(100*1024));
-
-		// Do not use readfile, it will try to post entire file in one go if output_buffering is enabled in php.ini.
-		$f = fopen($path, 'r');
-		while(!feof($f)){
-			print fgets($f, 4096);
+		if ($this->config()->min_download_bandwidth) {
+			// Allow the download to last long enough to allow full download with min_download_bandwidth connection.
+			increase_time_limit_to((int)(filesize($path)/($this->config()->min_download_bandwidth*1024)));
+		} else {
+			// Remove the timelimit.
+			increase_time_limit_to(0);
 		}
-		fclose($f);
+
+		// Clear PHP buffer, otherwise the script will try to allocate memory for entire file.
+		ob_end_flush();
+		// Prevent blocking of the session file by PHP. Without this the user can't visit another page of the same
+		// website during download (see http://konrness.com/php5/how-to-prevent-blocking-php-requests/)
+		session_write_close();
+
+		readfile($path);
 		die();
 	}
 
