@@ -32,7 +32,7 @@ class SecureFileController extends Controller {
 		// remove any relative base URL and prefixed slash that get appended to the file path
 		// e.g. /mysite/assets/test.txt should become assets/test.txt to match the Filename field on File record
 		$url = ltrim(str_replace(BASE_URL, '', $url), '/');
-		$file = File::find(Director::makeRelative($url));
+		$file = $this->find(Director::makeRelative($url));
 
 		if($this->canDownloadFile($file)) {
 			return $this->sendFile($file);
@@ -106,6 +106,29 @@ class SecureFileController extends Controller {
 
 		return false;
 	}
+	
+	  public  function find($filename) {
+		// Get the base file if $filename points to a resampled file
+		$filename = preg_replace('/_resampled\/[^-]+-/', '', $filename);
+
+		// Split to folders and the actual filename, and traverse the structure.
+		$parts = explode("/", $filename);
+		$parentID = 0;
+		$item = null;
+		foreach($parts as $part) {
+			if($part == ASSETS_DIR && !$parentID) continue;
+
+			$SQL_part = Convert::raw2sql($part);
+
+			$item = DataObject::get_one("File", "BINARY \"Name\" = '$SQL_part' AND \"ParentID\" = $parentID");
+			if(!$item){
+  			break;
+			}
+			$parentID = $item->ID;
+		}
+		return $item;
+	}
+
 
 }
 
