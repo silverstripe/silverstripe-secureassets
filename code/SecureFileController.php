@@ -31,10 +31,16 @@ class SecureFileController extends Controller {
 
 		// remove any relative base URL and prefixed slash that get appended to the file path
 		// e.g. /mysite/assets/test.txt should become assets/test.txt to match the Filename field on File record
-		$url = ltrim(str_replace(BASE_URL, '', $url), '/');
-		$file = File::find(Director::makeRelative($url));
+		$url = Director::makeRelative(ltrim(str_replace(BASE_URL, '', $url), '/'));
+		$file = File::find($url);
 
 		if($this->canDownloadFile($file)) {
+			// If we're trying to access a resampled image.
+			if(preg_match('/_resampled\/[^-]+-/', $url)) {
+				// File::find() will always return the original image, but we still want to serve the resampled version.
+				$file = new Image();
+				$file->Filename = $url;
+			}
 			return $this->sendFile($file);
 		} else {
 			if($file instanceof File) {
