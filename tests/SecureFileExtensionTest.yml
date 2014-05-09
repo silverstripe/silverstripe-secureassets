@@ -14,6 +14,7 @@ Folder:
     CanViewType: Anyone
   loggedin:
     CanViewType: LoggedInUsers
+  default-root:
   viewergroups:
     CanViewType: OnlyTheseUsers
     ViewerGroups: =>Group.test-group
@@ -23,6 +24,8 @@ Folder:
   child-viewergroups-open:
     CanViewType: Anyone
     Parent: =>Folder.viewergroups
+  default-child:
+    Parent: =>Folder.default-root
 File:
   test:
     Name: test-file
