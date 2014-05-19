@@ -1,0 +1,4 @@
+en:
+  SecureFile:
+    ACCESSHEADER: 'Who can view files in this folder?'
+    INHERIT: 'Inherit from parent folder'
