@@ -1,5 +1,7 @@
 # Secure Assets Module
 
+[![Build Status](https://travis-ci.org/silverstripe-labs/silverstripe-secureassets.svg)](https://travis-ci.org/silverstripe-labs/silverstripe-secureassets)
+
 ## Introduction
 
 A module for adding access restrictions to folders
