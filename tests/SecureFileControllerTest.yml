@@ -19,4 +19,4 @@ File:
   restrictive:
     Name: test-file2
     Filename: assets/FileTest2.txt
-    CanViewType: anyone
+    CanViewType: Anyone
