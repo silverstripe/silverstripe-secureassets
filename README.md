@@ -12,6 +12,8 @@ located at https://github.com/hamishcampbell/silverstripe-securefiles.
 
 This should work with IIS 7+, but it has not been extensively tested.
 
+See the [usage documentation](docs/en/index.md) for more information.
+
 ## Maintainer Contact
 
  * Hamish Friedlander `<hamish (at) silverstripe (dot) com>`
@@ -23,18 +25,9 @@ This should work with IIS 7+, but it has not been extensively tested.
 
 ## Installation Instructions
 
- 1. Extract the module to your website directory.
+ 1. Extract the module to your website directory, or install using
+    composer: `composer require silverstripe/secureassets dev-master`
  2. Run /dev/build?flush=1
-
-## Usage Overview
-
-Adds access fields to the edit view of a Folder in the Files CMS
-section.
-
-Securing files will cause extra load on your
-webserver and your database, as the framework will check
-the datatabase for access permissions, and pass the
-file data through the framework when it is output to the user.
 
 ## Credit
 
