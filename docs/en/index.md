@@ -1,7 +1,10 @@
-## Introduction
-
 The secure assets module can be used to apply read and write permissions to
 the filesystem on a folder by folder basis.
+
+Content authors sometimes need to load files into the CMS, and be assured that
+these cannot be publicly accessed via deep linking. This is achieved by organising
+these files into assigned folders, and using the secureassets module to apply
+security restrictions to those folders.
 
 ## Assigning permissions
 
@@ -43,8 +46,13 @@ DataObjects which other users may be able to edit. If that user does
 not have permission to view the file attached, then it will not appear
 against that object, and modification may result in it being detached.
 
-Try to avoid attaching images or other files to DataObjects which may 
-be publicly viewed, to avoid unnecessary access denied errors appearing.
+### Pages
+
+Pages may be created in draft with secure files attached, but when this page is
+published you will need to change the permissions on each file to make them accessible.
+
+Try to avoid attaching secure images or other files to live pages (or other DataObjects)
+which may be publicly viewed, to avoid unnecessary access denied errors appearing.
 
 ## Other Considerations
 
