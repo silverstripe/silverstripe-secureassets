@@ -1,0 +1,4 @@
+fi:
+  SecureFile:
+    ACCESSHEADER: 'Kenellä on oikeudet nähdä kansion tiedostot?'
+    INHERIT: 'Isäntäkansion asetukset'

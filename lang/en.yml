@@ -2,3 +2,7 @@ en:
   SecureFile:
     ACCESSHEADER: 'Who can view files in this folder?'
     INHERIT: 'Inherit from parent folder'
+  SiteTree:
+    ACCESSANYONE: Anyone
+    ACCESSLOGGEDIN: 'Logged-in users'
+    ACCESSONLYTHESE: 'Only these people (choose from list)'
