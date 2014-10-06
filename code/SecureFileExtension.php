@@ -63,11 +63,15 @@ class SecureFileExtension extends DataExtension {
 		return $canViewType;
 	}
 
-	function canView($member = null) {
-		if(!$member || !(is_a($member, 'Member')) || is_numeric($member)) $member = Member::currentUser();
+	public function canView($member = null) {
+		if(!$member || !(is_a($member, 'Member')) || is_numeric($member)) {
+			$member = Member::currentUser();
+		}
 
 		// admin override
-		if($member && Permission::checkMember($member, "ADMIN")) return true;
+		if($member && Permission::checkMember($member, "ADMIN")) {
+			return true;
+		}
 
 		if ($this->owner instanceof Folder) {
 			switch ($this->owner->CanViewType) {
@@ -88,11 +92,14 @@ class SecureFileExtension extends DataExtension {
 		// File DataObjects created by SearchForm don't have a ParentID, which we need
 		// We fix this by re-getting the File object by it's ID if the ParentID is missing and use that
 		$file = $this->owner;
-		if (!$file->ParentID) $file = DataObject::get_by_id('File', $file->ID);
 
 		// we assume if a file doesn't have a parent, it's in the root of assets, and therefore not secured
 		// because there's currently no way to secure the "root" assets folder
-		return $file->ParentID ? $file->Parent()->canView($member) : true;
+		if($file->Parent()->exists()) {
+			return $file->Parent()->canView($member);
+		}
+
+		return true;
 	}
 
 	function needsAccessFile() {
