@@ -1,0 +1,4 @@
+eo:
+  SecureFile:
+    ACCESSHEADER: 'Kiu povas vidigi dosierojn en ĉi tiu dosierujo?'
+    INHERIT: 'Heredi de patra dosierujo'
