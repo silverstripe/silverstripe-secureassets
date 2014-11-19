@@ -41,6 +41,9 @@ class SecureFileController extends Controller {
 				$file = new Image();
 				$file->Filename = $url;
 			}
+			
+			$this->extend('onBeforeSendFile', $file);
+			
 			return $this->sendFile($file);
 		} else {
 			if($file instanceof File) {
