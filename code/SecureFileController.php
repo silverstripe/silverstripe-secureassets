@@ -64,7 +64,11 @@ class SecureFileController extends Controller {
 	 */
 	public function sendFile($file) {
 		$path = $file->getFullPath();
-
+		
+		if(!file_exists($path)) {
+			return $this->httpError(404);
+		}
+		
 		if(SapphireTest::is_running_test()) {
 			return file_get_contents($path);
 		}
