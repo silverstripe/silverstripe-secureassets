@@ -42,7 +42,7 @@ class SecureFileController extends Controller {
 		}
 
 		header('Content-Description: File Transfer');
-		header('Content-Disposition: inline; filename=' . basename($path));
+		header('Content-Disposition: attachment; filename=' . basename($path));
 		header('Content-Length: ' . $file->getAbsoluteSize());
 		header('Content-Type: ' . HTTP::get_mime_type($file->getRelativePath()));
 		header('Content-Transfer-Encoding: binary');
