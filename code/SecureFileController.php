@@ -79,8 +79,10 @@ class SecureFileController extends Controller {
 		header('Content-Length: ' . $file->getAbsoluteSize());
 		header('Content-Type: ' . HTTP::get_mime_type($file->getRelativePath()));
 		header('Content-Transfer-Encoding: binary');
-		// Fixes IE6,7,8 file downloads over HTTPS bug (http://support.microsoft.com/kb/812935)
-		header('Pragma: ');
+
+		// Ensure we enforce no-cache headers consistently, so that files accesses aren't cached by CDN/edge networks
+		header('Pragma: no-cache');
+		header('Cache-Control: private, no-cache, no-store');
 
 		if ($this->config()->min_download_bandwidth) {
 			// Allow the download to last long enough to allow full download with min_download_bandwidth connection.
