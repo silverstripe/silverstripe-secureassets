@@ -1,6 +1,7 @@
 # See https://github.com/silverstripe-labs/silverstripe-travis-support for setup details
 
-language: php 
+language: php
+
 php: 
  - 5.3
 
@@ -8,7 +9,15 @@ sudo: false
 
 env:
  - DB=MYSQL CORE_RELEASE=3.1
- - DB=PGSQL CORE_RELEASE=3.1
+
+matrix:
+  include:
+    - php: 5.4
+      env: DB=PGSQL CORE_RELEASE=3.2
+    - php: 5.5
+      env: DB=MYSQL CORE_RELEASE=3
+    - php: 5.6
+      env: DB=MYSQL CORE_RELEASE=3.2
 
 before_script:
  - git clone git://github.com/silverstripe-labs/silverstripe-travis-support.git ~/travis-support
