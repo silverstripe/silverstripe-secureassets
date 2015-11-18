@@ -16,5 +16,12 @@
 	},
 	"suggest": {
 		"silverstripe/cms": "Allows you to easily edit file permissions in the CMS"
+	},
+	"extra": 
+	{
+		"branch-alias": 
+		{
+			"dev-master": "1.0.x-dev"
+		}
 	}
 }
