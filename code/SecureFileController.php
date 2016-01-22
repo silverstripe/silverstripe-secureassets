@@ -16,6 +16,18 @@ class SecureFileController extends Controller {
 	private static $min_download_bandwidth = 50; // [in kilobytes per second]
 
 	/**
+	 * @var string The Content-disposition for any files served by secureassets.
+	 * @config
+	 *
+	 * The default is 'attachment', which will force the browser to treat any file as a download. Other useful values
+	 * are 'inline' which will force the browser to treat any file as embeddable (e.g. display a JPG file in the
+	 * browser). Note that this has security implications for files that the browser can render (e.g. SWF files) that
+	 * can do malicious things in the website's context. Other less typical Content-disposition options are outlined by
+	 * the IANA here: http://www.iana.org/assignments/cont-disp/cont-disp.xhtml
+	 */
+	private static $content_disposition = 'attachment';
+
+	/**
 	 * Process all incoming requests passed to this controller, checking
 	 * that the file exists and passing the file through if possible.
 	 */
@@ -73,9 +85,12 @@ class SecureFileController extends Controller {
 			return file_get_contents($path);
 		}
 
+		$disposition = $this->config()->content_disposition;
+		if(!$disposition) $disposition = 'attachment';
+
 		header('Content-Description: File Transfer');
 		// Quotes needed to retain spaces (http://kb.mozillazine.org/Filenames_with_spaces_are_truncated_upon_download)
-		header('Content-Disposition: inline; filename="' . basename($path) . '"');
+		header(sprintf('Content-Disposition: %s; filename="%s"', $disposition, basename($path)));
 		header('Content-Length: ' . $file->getAbsoluteSize());
 		header('Content-Type: ' . HTTP::get_mime_type($file->getRelativePath()));
 		header('Content-Transfer-Encoding: binary');
