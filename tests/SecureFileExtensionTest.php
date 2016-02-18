@@ -38,12 +38,25 @@ class SecureFileExtensionTest extends SapphireTest {
 	public function testDefaultPermissions() {
 		$folder = $this->objFromFixture('Folder', 'default-root');
 		Session::set('loggedInAs', null);
-		$this->assertEquals('Anyone', $folder->CanViewType);
+		$this->assertEquals('Inherit', $folder->CanViewType);
 		$this->assertTrue($folder->canView());
 
 		$subfolder = $this->objFromFixture('Folder', 'default-child');
 		$this->assertEquals('Inherit', $subfolder->CanViewType);
 		$this->assertTrue($subfolder->canView());
+	}
+
+	public function testRestrictedDefaultPermissions() {
+		$folder = $this->objFromFixture('Folder', 'default-root');
+		Session::set('loggedInAs', null);
+		$this->assertTrue($folder->canView());
+
+		Config::inst()->update('SecureAssets', 'Defaults', array('Permission' => 'LoggedInUsers'));
+		$this->assertFalse($folder->canView());
+
+		$subfolder = $this->objFromFixture('Folder', 'default-child');
+		$this->assertEquals('Inherit', $subfolder->CanViewType);
+		$this->assertFalse($subfolder->canView());
 	}
 
 }

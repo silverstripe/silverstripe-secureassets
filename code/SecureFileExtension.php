@@ -57,9 +57,6 @@ class SecureFileExtension extends DataExtension {
 	public function getCanViewType() {
 		// In case that there is no parent to inherit from, map Inherit to Anyone
 		$canViewType = $this->owner->getField('CanViewType');
-		if(!$this->owner->ParentID && $canViewType === 'Inherit') {
-			return 'Anyone';
-		}
 		return $canViewType;
 	}
 
@@ -79,7 +76,7 @@ class SecureFileExtension extends DataExtension {
 					return (bool)$member;
 				case 'Inherit':
 					if ($this->owner->ParentID) return $this->owner->Parent()->canView($member);
-					else return true;
+					else return $this->defaultPermissions($member);
 				case 'OnlyTheseUsers':
 					if ($member && $member->inGroups($this->owner->ViewerGroups())) return true;
 					else return false;
@@ -97,6 +94,28 @@ class SecureFileExtension extends DataExtension {
 		// because there's currently no way to secure the "root" assets folder
 		if($file->Parent()->exists()) {
 			return $file->Parent()->canView($member);
+		}
+
+		return $this->defaultPermissions($member);
+	}
+
+	protected function defaultPermissions($member = null) {
+		if(!$member || !(is_a($member, 'Member')) || is_numeric($member)) {
+			$member = Member::currentUser();
+		}
+		if ($default = Config::inst()->get('SecureAssets', 'Defaults')) {
+			switch ($default['Permission']) {
+				case 'LoggedInUsers':
+					return (bool) $member;
+				case 'OnlyTheseUsers':
+					if ($member && $member->inGroups($default['Groups']))
+						return true;
+					else
+						return false;
+				case 'Anyone':
+				default:
+					return true;
+			}
 		}
 
 		return true;
