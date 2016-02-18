@@ -8,3 +8,9 @@ File:
 Director:
   rules:
     'assets': 'SecureFileController'
+SecureAssets:
+  Defaults:
+    Permission: 'Anyone'
+    Groups:
+      - 'administrators'
+      - 'content-authors'
