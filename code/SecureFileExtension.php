@@ -93,6 +93,13 @@ class SecureFileExtension extends DataExtension {
 		return $this->defaultPermissions($member);
 	}
 
+	/**
+	 * Checks for any default access permissions and tests against them if found. Default permssions are set via the 
+	 * Config system.
+	 *
+	 * @param Member $member
+	 * @return boolean
+	 */
 	protected function defaultPermissions($member = null) {
 		if(!$member || !(is_a($member, 'Member')) || is_numeric($member)) {
 			$member = Member::currentUser();
