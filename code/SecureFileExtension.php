@@ -53,12 +53,6 @@ class SecureFileExtension extends DataExtension {
 		// fallback to Apache
 		return $registeredConfigs['Apache'];
 	}
-	
-	public function getCanViewType() {
-		// In case that there is no parent to inherit from, map Inherit to Anyone
-		$canViewType = $this->owner->getField('CanViewType');
-		return $canViewType;
-	}
 
 	public function canView($member = null) {
 		if(!$member || !(is_a($member, 'Member')) || is_numeric($member)) {
