@@ -70,7 +70,7 @@ class SecureFileExtension extends DataExtension {
 					return (bool)$member;
 				case 'Inherit':
 					if ($this->owner->ParentID) return $this->owner->Parent()->canView($member);
-					else return $this->defaultPermissions($member);
+					else return $this->owner->defaultPermissions($member);
 				case 'OnlyTheseUsers':
 					if ($member && $member->inGroups($this->owner->ViewerGroups())) return true;
 					else return false;
@@ -90,7 +90,7 @@ class SecureFileExtension extends DataExtension {
 			return $file->Parent()->canView($member);
 		}
 
-		return $this->defaultPermissions($member);
+		return $this->owner->defaultPermissions($member);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class SecureFileExtension extends DataExtension {
 	 * @param Member $member
 	 * @return boolean
 	 */
-	protected function defaultPermissions($member = null) {
+	public function defaultPermissions($member = null) {
 		if(!$member || !(is_a($member, 'Member')) || is_numeric($member)) {
 			$member = Member::currentUser();
 		}
