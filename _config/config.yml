@@ -12,5 +12,5 @@ SecureAssets:
   Defaults:
     Permission: 'Anyone'
     Groups:
-      - 'Administrators'
-      - 'Content Authors'
+      - 'administrators'
+      - 'content-authors'
