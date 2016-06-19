@@ -1,6 +1,6 @@
 <?php
 class SecureFileControllerTest extends FunctionalTest {
-	static $fixture_file = 'SecureFileControllerTest.yml';
+	protected static $fixture_file = 'SecureFileControllerTest.yml';
 
 	public function testCanDownloadPermissivePermission() {
 		File::add_extension('SecureFileExtensionTest_PermissiveFileExtension');
@@ -33,7 +33,9 @@ class SecureFileControllerTest extends FunctionalTest {
 	public function setUp() {
 		parent::setUp();
 
-		if(!file_exists(ASSETS_PATH)) mkdir(ASSETS_PATH);
+		if(!file_exists(ASSETS_PATH)) {
+            mkdir(ASSETS_PATH);
+        }
 
 		/* Create a test files for each of the fixture references */
 		$fileIDs = $this->allFixtureIDs('File');

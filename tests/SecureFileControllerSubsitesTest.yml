@@ -1,0 +1,14 @@
+Subsite:
+  subsite1:
+    Title: 'First Subsite'
+  subsite2:
+    Title: 'Second Subsite'
+File:
+  file1:
+    Name: test-file
+    Filename: assets/FileTest.txt
+    SubsiteID: =>Subsite.subsite1
+  file2:
+    Name: test-file2
+    Filename: assets/FileTest2.txt
+    SubsiteID: =>Subsite.subsite2
