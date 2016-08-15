@@ -44,72 +44,73 @@ class SecureFileController extends Controller {
 		// remove any relative base URL and prefixed slash that get appended to the file path
 		// e.g. /mysite/assets/test.txt should become assets/test.txt to match the Filename field on File record
 		$url = Director::makeRelative(ltrim(str_replace(BASE_URL, '', $url), '/'));
-        $self = $this;
-		return $this->disableFilters(function() use ($url, $self) {
-            $file = File::find($url);
+		$self = $this;
 
-            if($self->canDownloadFile($file)) {
-                // If we're trying to access a resampled image.
-                if(preg_match('/_resampled\/[^-]+-/', $url)) {
-                    // File::find() will always return the original image, but we still want to serve the resampled version.
-                    $file = new Image();
-                    $file->Filename = $url;
-                }
+		return $this->disableFilters(function () use ($url, $self) {
+			$file = File::find($url);
 
-                $self->extend('onBeforeSendFile', $file);
+			if ($self->canDownloadFile($file)) {
+				// If we're trying to access a resampled image.
+				if (preg_match('/_resampled\/[^-]+-/', $url)) {
+					// File::find() will always return the original image, but we still want to serve the resampled version.
+					$file = new Image();
+					$file->Filename = $url;
+				}
 
-                return $self->sendFile($file);
-            } else {
-                if($file instanceof File) {
-                    // Permission failure
-                    Security::permissionFailure($self, 'You are not authorised to access this resource. Please log in.');
-                } else {
-                    // File doesn't exist
-                    $self->setResponse(new SS_HTTPResponse('File Not Found', 404));
-                }
-            }
+				$self->extend('onBeforeSendFile', $file);
 
-		    return $self->getResponse();
-        });
+				return $self->sendFile($file);
+			} else {
+				if ($file instanceof File) {
+					// Permission failure
+					Security::permissionFailure($self, 'You are not authorised to access this resource. Please log in.');
+				} else {
+					// File doesn't exist
+					return $this->httpError(404);
+				}
+			}
+
+			return $self->getResponse();
+		});
 	}
 
-    /**
-     * Execute a method with any filters disabled (Subsites, etc)
-     *
-     * @param string $callback
-     * @return mixed Result of the $callback being executed
-     */
-    protected function disableFilters($callback) {
-        // Backup and disable subsites
-        $hasSubsites = class_exists('Subsite', false);
-        $origSubsiteDisabled = null;
-        if($hasSubsites) {
-            $origSubsiteDisabled = Subsite::$disable_subsite_filter;
-            Subsite::disable_subsite_filter(true);
-        }
+	/**
+	 * Execute a method with any filters disabled (Subsites, etc)
+	 *
+	 * @param string $callback
+	 * @return mixed Result of the $callback being executed
+	 */
+	protected function disableFilters($callback) {
+		// Backup and disable subsites
+		$hasSubsites = class_exists('Subsite', false);
+		$origSubsiteDisabled = null;
+		if($hasSubsites) {
+			$origSubsiteDisabled = Subsite::$disable_subsite_filter;
+			Subsite::disable_subsite_filter(true);
+		}
 
-        // Backup and disable translatable
-        $hasTranslatable = class_exists('Translatable', false);
-        $origTranslatableEnabled = null;
-        if($hasTranslatable) {
-            $origTranslatableEnabled = Translatable::disable_locale_filter();
-        }
+		// Backup and disable translatable
+		$hasTranslatable = class_exists('Translatable', false);
+		$origTranslatableEnabled = null;
+		if($hasTranslatable) {
+			$origTranslatableEnabled = Translatable::disable_locale_filter();
+		}
 
-        // Callback
+		// Callback
 		$result = call_user_func($callback);
 
-        // Restore translatable
-        if($hasTranslatable) {
-            Translatable::enable_locale_filter($origTranslatableEnabled);
-        }
+		// Restore translatable
+		if($hasTranslatable) {
+			Translatable::enable_locale_filter($origTranslatableEnabled);
+		}
 
-        // Restore subsites
-        if($hasSubsites) {
-            Subsite::disable_subsite_filter($origSubsiteDisabled);
-        }
+		// Restore subsites
+		if($hasSubsites) {
+			Subsite::disable_subsite_filter($origSubsiteDisabled);
+		}
 
-        return $result;
-    }
+		return $result;
+	}
 
 	/**
 	 * Output file to the browser.
