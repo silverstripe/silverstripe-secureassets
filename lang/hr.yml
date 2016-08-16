@@ -1,0 +1,4 @@
+hr:
+  SecureFile:
+    ACCESSHEADER: 'Tko može vidjeti datoteke u ovom direktoriju?'
+    INHERIT: 'Naslijedi od nadređenog direktorija'
