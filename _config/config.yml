@@ -14,3 +14,10 @@ SecureAssets:
     Groups:
       - 'administrators'
       - 'content-authors'
+---
+Only:
+  classexists: 'ErrorPageControllerExtension'
+---
+SecureFileController:
+  extensions:
+    - ErrorPageControllerExtension
