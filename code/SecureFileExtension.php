@@ -64,6 +64,11 @@ class SecureFileExtension extends DataExtension {
 			return true;
 		}
 
+        // allow owner to view own file
+        if( $member && $member->ID == $this->owner->OwnerID ){
+            return true;
+        }
+
 		if ($this->owner instanceof Folder) {
 			switch ($this->owner->CanViewType) {
 				case 'LoggedInUsers':
