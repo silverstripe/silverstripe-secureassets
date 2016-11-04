@@ -51,7 +51,7 @@ class SecureFileController extends Controller {
 
 			if ($self->canDownloadFile($file)) {
 				// If we're trying to access a resampled image.
-				if (preg_match('/_resampled\/[^-]+-/', $url)) {
+				if (preg_match('/_resampled\//', $url)) {
 					// File::find() will always return the original image, but we still want to serve the resampled version.
 					$file = new Image();
 					$file->Filename = $url;
