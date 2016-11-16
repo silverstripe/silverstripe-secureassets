@@ -1,0 +1,4 @@
+it:
+  SecureFile:
+    ACCESSHEADER: 'Chi può vedere i file in questa cartella?'
+    INHERIT: 'Eredita dalla cartella padre'
