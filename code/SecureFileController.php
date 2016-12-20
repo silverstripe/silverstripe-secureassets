@@ -66,7 +66,7 @@ class SecureFileController extends Controller {
 					Security::permissionFailure($self, 'You are not authorised to access this resource. Please log in.');
 				} else {
 					// File doesn't exist
-					return $this->httpError(404);
+					return $self->httpError(404);
 				}
 			}
 
