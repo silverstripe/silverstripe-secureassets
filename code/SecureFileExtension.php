@@ -88,6 +88,9 @@ class SecureFileExtension extends DataExtension {
 		// File DataObjects created by SearchForm don't have a ParentID, which we need
 		// We fix this by re-getting the File object by it's ID if the ParentID is missing and use that
 		$file = $this->owner;
+		if( $file->ParentID == "" ){
+			$file = DataObject::get($file->ClassName)->byID($file->ID);
+		}
 
 		// we assume if a file doesn't have a parent, it's in the root of assets, and therefore not secured
 		// because there's currently no way to secure the "root" assets folder
