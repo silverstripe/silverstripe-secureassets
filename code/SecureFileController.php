@@ -39,6 +39,18 @@ class SecureFileController extends Controller {
 		$this->response = new SS_HTTPResponse();
 		$this->setDataModel($model);
 
+		$this->extend('onBeforeInit');
+
+		// Init
+		$this->baseInitCalled = false;
+		$this->init();
+		if(!$this->baseInitCalled) {
+			user_error("init() method on class '$this->class' doesn't call Controller::init()."
+				. "Make sure that you have parent::init() included.", E_USER_WARNING);
+		}
+
+		$this->extend('onAfterInit');
+
 		$url = array_key_exists('url', $_GET) ? $_GET['url'] : $_SERVER['REQUEST_URI'];
 
 		// remove any relative base URL and prefixed slash that get appended to the file path
