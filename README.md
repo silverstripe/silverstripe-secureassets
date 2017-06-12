@@ -1,6 +1,6 @@
 # Secure Assets Module
 
-[![Build Status](https://travis-ci.org/silverstripe-labs/silverstripe-secureassets.svg)](https://travis-ci.org/silverstripe-labs/silverstripe-secureassets)
+[![Build Status](https://travis-ci.org/silverstripe/silverstripe-secureassets.svg)](https://travis-ci.org/silverstripe/silverstripe-secureassets)
 
 ## Introduction
 
