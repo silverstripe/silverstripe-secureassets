@@ -99,7 +99,7 @@ class SecureFileExtension extends DataExtension {
 	}
 
 	/**
-	 * Checks for any default access permissions and tests against them if found. Default permssions are set via the 
+	 * Checks for any default access permissions and tests against them if found. Default permssions are set via the
 	 * Config system.
 	 *
 	 * @param Member $member
@@ -171,12 +171,16 @@ class SecureFileExtension extends DataExtension {
 				)
 			);
 
-			$fields->push(
-				new TreeMultiselectField(
-					'ViewerGroups',
-					$this->owner->fieldLabel('ViewerGroups')
-				)
-			);
+            $fields->push(
+    			new ListboxField(
+    				'ViewerGroups',
+    				$this->owner->fieldLabel('ViewerGroups'),
+    				Group::get()->map()->toArray(),
+    				null,
+    				null,
+    				true
+    			)
+    		);
 		}
 	}
 
@@ -207,4 +211,3 @@ class SecureFileExtension extends DataExtension {
 	}
 
 }
-
