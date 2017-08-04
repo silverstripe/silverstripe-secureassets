@@ -1,27 +1,30 @@
 {
-	"name": "silverstripe/secureassets",
-	"type": "silverstripe-module",
-	"description": "Adds access restrictions to folders in assets, similar to the way you secure pages",
-	"homepage": "http://silverstripe.org",
-	"license": "BSD-3-Clause",
-	"keywords": ["silverstripe", "assets", "secure", "files"],
-	"authors": [
-		{
-			"name": "Sean Harvey",
-			"email": "sean@silverstripe.com"
-		}
-	],
-	"require": {
-		"silverstripe/framework": "~3.1"
-	},
-	"suggest": {
-		"silverstripe/cms": "Allows you to easily edit file permissions in the CMS"
-	},
-	"extra":
-	{
-		"branch-alias":
-		{
-			"dev-master": "1.x-dev"
-		}
-	}
+    "name": "silverstripe/secureassets",
+    "type": "silverstripe-module",
+    "description": "Adds access restrictions to folders in assets, similar to the way you secure pages",
+    "homepage": "http://silverstripe.org",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "silverstripe",
+        "assets",
+        "secure",
+        "files"
+    ],
+    "authors": [
+        {
+            "name": "Sean Harvey",
+            "email": "sean@silverstripe.com"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "~3.1"
+    },
+    "suggest": {
+        "silverstripe/cms": "Allows you to easily edit file permissions in the CMS"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    }
 }
