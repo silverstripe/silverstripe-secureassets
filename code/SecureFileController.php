@@ -125,10 +125,16 @@ class SecureFileController extends Controller {
 	}
 
 	/**
-	 * Output file to the browser.
+	 * Output file to the browser
+	 *
 	 * For performance reasons, we avoid SS_HTTPResponse and just output the contents instead.
+	 *
+	 * @param $file                     File to output
+	 * @param string|null $name         Optional filename override value
+	 * @param string|null $disposition  Optional content disposition override value
+	 * @return bool|string|void
 	 */
-	public function sendFile($file) {
+	public function sendFile($file, $name = null, $disposition = null) {
 		$path = $file->getFullPath();
 
 		if(!file_exists($path)) {
@@ -139,12 +145,17 @@ class SecureFileController extends Controller {
 			return file_get_contents($path);
 		}
 
-		$disposition = $this->config()->content_disposition;
-		if(!$disposition) $disposition = 'attachment';
+		if(!$disposition) {
+			$disposition = $this->config()->content_disposition ?: 'attachment';
+		}
+
+		if(!$name) {
+		    $name = basename($path);
+		}
 
 		header('Content-Description: File Transfer');
 		// Quotes needed to retain spaces (http://kb.mozillazine.org/Filenames_with_spaces_are_truncated_upon_download)
-		header(sprintf('Content-Disposition: %s; filename="%s"', $disposition, basename($path)));
+		header(sprintf('Content-Disposition: %s; filename="%s"', $disposition, $name));
 		header('Content-Length: ' . $file->getAbsoluteSize());
 		header('Content-Type: ' . HTTP::get_mime_type($file->getRelativePath()));
 		header('Content-Transfer-Encoding: binary');
