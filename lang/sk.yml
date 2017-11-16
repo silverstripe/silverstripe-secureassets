@@ -1,0 +1,4 @@
+sk:
+  SecureFile:
+    ACCESSHEADER: 'Kto môže zobraziť súbory v tomto priečinku?'
+    INHERIT: 'Zdediť z nadradeného priečinka'
