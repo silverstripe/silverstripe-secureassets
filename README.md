@@ -21,7 +21,11 @@ See the [usage documentation](docs/en/index.md) for more information.
 
 ## Requirements
 
- * SilverStripe 3.1+
+ * SilverStripe [^3.1](https://getcomposer.org/doc/articles/versions.md#caret-version-range-)
+ 
+ (3.1 up to but _not_ including 4)
+ 
+ **NOTE:** Since SilverStripe 4.0.0 this module has been superseded by core functionality (provided by [`silverstripe/assets`](https://github.com/silverstripe/silverstripe-assets) - a part of [recipe-core](https://github.com/silverstripe/recipe-core)).
 
 ## Installation Instructions
 
