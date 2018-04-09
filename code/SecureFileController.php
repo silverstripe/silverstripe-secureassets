@@ -225,7 +225,7 @@ class SecureFileController extends Controller {
             if($part == ASSETS_DIR && !$parentID) continue;
             /** @var File $item */
             $item = File::get()->filter(array(
-                'Name:ExactMatch' => $part,
+                'Name:ExactMatch:case' => $part,
                 'ParentID' => $parentID
             ))->first();
             if(!$item) break;
