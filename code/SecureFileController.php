@@ -59,7 +59,7 @@ class SecureFileController extends Controller {
 		$self = $this;
 
 		return $this->disableFilters(function () use ($url, $self) {
-			$file = File::find($url);
+			$file = $this->find($url);
 
 			if ($self->canDownloadFile($file)) {
 				// If we're trying to access a resampled image.
@@ -204,6 +204,36 @@ class SecureFileController extends Controller {
 
 		return false;
 	}
+
+    /**
+     * Case-sensitive version of File::find(). This is used because case-sensitive file systems can have files at both
+     * upload.jpg and upload.JPG. Without this change, we always return the first of those files no matter what. SS
+     * *shouldn't* allow two files to be uploaded with the same (case insensitive) filename, but it does.
+     *
+     * @param string $filename
+     * @return File|null
+     */
+    public function find($filename) {
+        // Get the base file if $filename points to a resampled file
+        $filename = Image::strip_resampled_prefix($filename);
+
+        // Split to folders and the actual filename, and traverse the structure.
+        $parts = explode("/", $filename);
+        $parentID = 0;
+        $item = null;
+        foreach($parts as $part) {
+            if($part == ASSETS_DIR && !$parentID) continue;
+            /** @var File $item */
+            $item = File::get()->filter(array(
+                'Name:ExactMatch' => $part,
+                'ParentID' => $parentID
+            ))->first();
+            if(!$item) break;
+            $parentID = $item->ID;
+        }
+
+        return $item;
+    }
 
 }
 
