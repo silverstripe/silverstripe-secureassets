@@ -33,6 +33,12 @@ See the [usage documentation](docs/en/index.md) for more information.
     composer: `composer require silverstripe/secureassets dev-master`
  2. Run /dev/build?flush=1
 
+## Upgrade Instructions
+As above, this module is no longer needed in the SilverStripe 4.x release line. 
+
+Run `dev/build` followed by `dev/tasks/MigrateFileTask`. All secure assets will be migrated to 
+your updated project.
+
 ## Credit
 
 This is a fairly heavy re-write of a community
