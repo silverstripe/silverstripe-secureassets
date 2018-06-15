@@ -1,6 +1,7 @@
 # Secure Assets Module
 
 [![Build Status](https://travis-ci.org/silverstripe/silverstripe-secureassets.svg)](https://travis-ci.org/silverstripe/silverstripe-secureassets)
+[![SilverStripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
 
 ## Introduction
 
