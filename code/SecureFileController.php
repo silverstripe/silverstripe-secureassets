@@ -75,10 +75,10 @@ class SecureFileController extends Controller {
 			} else {
 				if ($file instanceof File) {
 					// Permission failure
-					Security::permissionFailure($self, 'You are not authorised to access this resource. Please log in.');
+                    throw new SS_HTTPResponse_Exception('You are not authorised to access this resource. Please log in.', 403);
 				} else {
 					// File doesn't exist
-					return $self->httpError(404);
+                    throw new SS_HTTPResponse_Exception('File not found', 404);
 				}
 			}
 
@@ -108,20 +108,44 @@ class SecureFileController extends Controller {
 			$origTranslatableEnabled = Translatable::disable_locale_filter();
 		}
 
-		// Callback
-		$result = call_user_func($callback);
+        // Callback
+        try {
+            $result = call_user_func($callback);
 
-		// Restore translatable
-		if($hasTranslatable) {
-			Translatable::enable_locale_filter($origTranslatableEnabled);
-		}
+            // Restore translatable
+            if($hasTranslatable) {
+                Translatable::enable_locale_filter($origTranslatableEnabled);
+            }
 
-		// Restore subsites
-		if($hasSubsites) {
-			Subsite::disable_subsite_filter($origSubsiteDisabled);
-		}
+            // Restore subsites
+            if($hasSubsites) {
+                Subsite::disable_subsite_filter($origSubsiteDisabled);
+            }
+        } catch (SS_HTTPResponse_Exception $e) {
+            // Restore translatable
+            if($hasTranslatable) {
+                Translatable::enable_locale_filter($origTranslatableEnabled);
+            }
 
-		return $result;
+            // Restore subsites
+            if($hasSubsites) {
+                Subsite::disable_subsite_filter($origSubsiteDisabled);
+            }
+
+            // This needs to happen after filters have been reset so that 404 pages or security
+            // redirects can happen in context of their subsite and correct translation
+            $statusCode = $e->getResponse()->getStatusCode();
+            if ($statusCode === 403) {
+                $result = Security::permissionFailure(
+                    $this,
+                    $e->getMessage()
+                );
+            } else {
+                $result = $this->httpError($statusCode, $e->getMessage());
+            }
+        }
+
+        return $result;
 	}
 
 	/**

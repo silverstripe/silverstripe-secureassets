@@ -9,7 +9,7 @@ class SecureFileControllerTest extends FunctionalTest {
 		Session::set('loggedInAs', null); // Logout, this file is only for LoggedInUsers, but extension should override
 		$content = $this->get($file->Filename);
 		$this->assertContains('xxxxx', $content->getBody());
-		$this->assertTrue($content->getStatusCode() === 200);
+		$this->assertSame(200, $content->getStatusCode());
 
 		File::remove_extension('SecureFileExtensionTest_PermissiveFileExtension');
 	}
@@ -22,7 +22,7 @@ class SecureFileControllerTest extends FunctionalTest {
 
 		$file = $this->objFromFixture('File', 'restrictive');
 		$content = $this->get($file->Filename); // This file lets anyone access it, but our extension should override
-		$this->assertTrue($content->getStatusCode() === 302); // Should redirect to Security/login
+		$this->assertSame(302, $content->getStatusCode()); // Should redirect to Security/login
 		$this->assertContains('Security/login', $content->getHeader('Location'));
 
 		$this->autoFollowRedirection = $oldAFR;
