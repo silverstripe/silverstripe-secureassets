@@ -19,6 +19,9 @@
     "require": {
         "silverstripe/framework": "^3.3"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
     "suggest": {
         "silverstripe/cms": "Allows you to easily edit file permissions in the CMS"
     },
