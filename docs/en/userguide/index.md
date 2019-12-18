@@ -1,5 +1,7 @@
+---
 title: Securing files
 summary: How to secure files inside the Files and Images area
+---
 
 # Securing files
 
@@ -40,11 +42,11 @@ For folders at the third level or deeper (e.g. assets/Uploads/Subfolder)
 the default value is instead `Inherit`, which will use the same
 permissions as the folder above.
 
-<div class="note" markdown='1'>
+[note]
 As a matter of best practice it is advisable to avoid giving a subfolder
 less restrictive permissions than the one above, as users may find
 it difficult to access in the CMS.
-</div>
+[/note]
 
 ## Permission considerations
 
